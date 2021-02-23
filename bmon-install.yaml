@@ -1,0 +1,42 @@
+---
+- hosts: localhost
+  vars:
+    - user: 'bmon'
+    - ssh_key: '.ssh/id_rsa'
+
+  tasks:
+    - name: "Install system packages"
+      become: yes
+      apt: 
+        name:
+          - git 
+          - pipenv
+          - python3-pip 
+          - python3-dev 
+          - nginx 
+          - curl 
+          - sqlite3
+          - pwgen
+        state: latest
+
+    - name: "Upgrade pip"
+      become: yes
+      pip:
+        name: pip
+        extra_args: --upgrade
+
+    - name: "Clone BMON Repository"
+      git:
+        repo: "git@github.com:alanmitchell/bmon.git"
+        dest: "/home/{{ user }}/bmon"
+        accept_hostkey: yes
+        force: no
+        recursive: no
+        key_file: "/home/{{ user }}/{{ ssh_key }}"
+        version: bare-server
+
+    - name: "Install BMON Dependencies"
+      shell:
+        cmd: pipenv sync
+        chdir: "/home/{{ user }}/bmon/"
+
