@@ -1,8 +1,8 @@
 ---
 - hosts: localhost
   vars:
-    - user: 'bmon'
-    - ssh_key: '.ssh/id_rsa'
+    - user: bmon
+    - ssh_key: .ssh/id_rsa
 
   tasks:
     - name: Install system packages
@@ -27,23 +27,27 @@
         name: pip
         extra_args: --upgrade
 
+    - name: Install visidata data viewing tool
+      pip:
+        name: visidata
+
     - name: Clone BMON Repository
       git:
-        repo: "https://github.com/alanmitchell/bmon.git"
-        dest: "/home/{{ user }}/bmon"
+        repo: https://github.com/alanmitchell/bmon.git
+        dest: /home/{{ user }}/bmon
         accept_hostkey: yes
         force: no
         recursive: no
-        key_file: "/home/{{ user }}/{{ ssh_key }}"
+        key_file: /home/{{ user }}/{{ ssh_key }}
         version: bare-server
 
     - name: Install BMON Dependencies
       shell:
         cmd: pipenv sync
-        chdir: "/home/{{ user }}/bmon/"
+        chdir: /home/{{ user }}/bmon/
 
     - name: Make a BMON settings.py file from a template
       ansible.builtin.template:
-        src: "/home/{{ user }}/bmon/bmon/settings_example.py"
-        dest: "/home/{{ user }}/bmon/bmon/settings.py"
+        src: /home/{{ user }}/bmon/bmon/settings_example.py
+        dest: /home/{{ user }}/bmon/bmon/settings.py
           

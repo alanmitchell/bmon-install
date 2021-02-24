@@ -15,17 +15,13 @@
     - email_password: PasswordForAbove
 
   tasks:
-    - name: Make a BMON Storage Key
+  
+    - name: Run a number of manage.py commands on the Django app
       shell:
-        cmd: pwgen 12 1
-      register: store_key
-
-    - name: Make a Django Secret Key
-      shell:
-        cmd: pwgen 20 1
-      register: django_secret_key
-
-    - name: Make a BMON settings.py file from a template
-      ansible.builtin.template:
-        src: "/home/{{ user }}/bmon/bmon/settings_example.py"
-        dest: "/home/{{ user }}/bmon/bmon/settings.py"
+        cmd: pipenv run python manage.py {{ item }}
+        chdir: /home/{{ user }}/bmon/
+      loop:
+        - makemigrations
+        - migrate
+        - collectstatic --noinput
+        - loaddata init_data.yaml
