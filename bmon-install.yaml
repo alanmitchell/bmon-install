@@ -2,7 +2,6 @@
 - hosts: localhost
   vars:
     - user: bmon
-    - ssh_key: .ssh/id_rsa
 
   tasks:
     - name: Install system packages
@@ -35,10 +34,8 @@
       git:
         repo: https://github.com/alanmitchell/bmon.git
         dest: /home/{{ user }}/bmon
-        accept_hostkey: yes
         force: no
         recursive: no
-        key_file: /home/{{ user }}/{{ ssh_key }}
         version: bare-server
 
     - name: Install BMON Dependencies

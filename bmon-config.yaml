@@ -2,7 +2,6 @@
 - hosts: localhost
   vars:
     - user: bmon
-    - ssh_key: .ssh/id_rsa
     - bmon_site_title: BMON Test Site
     - admin_email_name: Alan Mitchell
     - admin_email_address: tabb99@gmail.com
@@ -15,7 +14,6 @@
     - email_password: PasswordForAbove
 
   tasks:
-  
     - name: Run a number of manage.py commands on the Django app
       shell:
         cmd: pipenv run python manage.py {{ item }}

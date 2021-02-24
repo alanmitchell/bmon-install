@@ -2,7 +2,6 @@
 - hosts: localhost
   vars:
     - user: bmon
-    - ssh_key: .ssh/id_rsa
     - bmon_site_title: BMON Test Site
     - admin_email_name: Alan Mitchell
     - admin_email_address: tabb99@gmail.com
