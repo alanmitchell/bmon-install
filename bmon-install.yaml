@@ -17,6 +17,8 @@
           - curl 
           - sqlite3
           - pwgen
+          - tree
+          - unzip
         state: latest
 
     - name: "Upgrade pip"
@@ -27,7 +29,7 @@
 
     - name: "Clone BMON Repository"
       git:
-        repo: "git@github.com:alanmitchell/bmon.git"
+        repo: "https://github.com/alanmitchell/bmon.git"
         dest: "/home/{{ user }}/bmon"
         accept_hostkey: yes
         force: no
