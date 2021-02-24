@@ -6,8 +6,8 @@
     - admin_email_name: Alan Mitchell
     - admin_email_address: tabb99@gmail.com
     - allowed_hosts:
-      - sewardwatch.org
-      - 198.199.116.9
+      - bmontest.org
+      - 192.241.198.236
       - localhost
     - email_smtp_host:  smtp.gmail.com
     - email_username: something@gmail.com

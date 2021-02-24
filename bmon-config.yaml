@@ -6,12 +6,15 @@
     - admin_email_name: Alan Mitchell
     - admin_email_address: tabb99@gmail.com
     - allowed_hosts:
-      - sewardwatch.org
-      - 198.199.116.9
+      - bmontest.org
+      - 192.241.198.236
       - localhost
     - email_smtp_host:  smtp.gmail.com
     - email_username: something@gmail.com
     - email_password: PasswordForAbove
+    - superuser_name: admin
+    - superuser_password: password
+    - superuser_email: super@gmail.com
 
   tasks:
     - name: Run a number of manage.py commands on the Django app
@@ -23,3 +26,8 @@
         - migrate
         - collectstatic --noinput
         - loaddata init_data.yaml
+
+    - name: Create the super user
+      shell:
+        cmd: echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('{{ superuser_name }}', '{{ superuser_email }}', '{{ superuser_password }}')" | pipenv run python manage.py shell
+        chdir: /home/{{ user }}/bmon/
