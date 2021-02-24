@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  vars:
+    - user: bmon
+    - ssh_key: ".ssh/id_rsa"
+    - bmon_site_title: "BMON Test Site"
+    - admin_email_name: "Alan Mitchell"
+    - admin_email_address: "tabb99@gmail.com"
+
+# ALLOWED_HOSTS = ['sewardwatch.org', 'www.sewardwatch.org', '198.199.116.9', 'localhost']
+
+  tasks:
+    - name: Make a BMON Storage Key
+      shell:
+        cmd: pwgen 12 1
+      register: store_key
+
+    - name: Make a Django Secret Key
+      shell:
+        cmd: pwgen 20 1
+      register: django_secret_key
+
+    - name: Make a BMON settings.py file from a template
+      ansible.builtin.template:
+        src: "/home/{{ user }}/bmon/bmon/settings_example.py"
+        dest: "/home/{{ user }}/bmon/bmon/settings.py"

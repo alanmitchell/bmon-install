@@ -31,4 +31,3 @@
       ansible.builtin.file:
         path: "{{ awscli_build.path }}"
         state: absent
-      when: awscli_build.path is defined

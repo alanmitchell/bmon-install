@@ -5,7 +5,7 @@
     - ssh_key: '.ssh/id_rsa'
 
   tasks:
-    - name: "Install system packages"
+    - name: Install system packages
       become: yes
       apt: 
         name:
@@ -21,13 +21,13 @@
           - unzip
         state: latest
 
-    - name: "Upgrade pip"
+    - name: Upgrade pip
       become: yes
       pip:
         name: pip
         extra_args: --upgrade
 
-    - name: "Clone BMON Repository"
+    - name: Clone BMON Repository
       git:
         repo: "https://github.com/alanmitchell/bmon.git"
         dest: "/home/{{ user }}/bmon"
@@ -37,8 +37,13 @@
         key_file: "/home/{{ user }}/{{ ssh_key }}"
         version: bare-server
 
-    - name: "Install BMON Dependencies"
+    - name: Install BMON Dependencies
       shell:
         cmd: pipenv sync
         chdir: "/home/{{ user }}/bmon/"
 
+    - name: Make a BMON settings.py file from a template
+      ansible.builtin.template:
+        src: "/home/{{ user }}/bmon/bmon/settings_example.py"
+        dest: "/home/{{ user }}/bmon/bmon/settings.py"
+          
