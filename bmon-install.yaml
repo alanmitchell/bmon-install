@@ -2,6 +2,16 @@
 - hosts: localhost
   vars:
     - user: bmon
+    - bmon_site_title: BMON Test Site
+    - admin_email_name: Alan Mitchell
+    - admin_email_address: tabb99@gmail.com
+    - allowed_hosts:
+      - sewardwatch.org
+      - 198.199.116.9
+      - localhost
+    - email_smtp_host:  smtp.gmail.com
+    - email_username: something@gmail.com
+    - email_password: PasswordForAbove
 
   tasks:
     - name: Install system packages
@@ -35,7 +45,6 @@
         repo: https://github.com/alanmitchell/bmon.git
         dest: /home/{{ user }}/bmon
         force: no
-        recursive: no
         version: bare-server
 
     - name: Install BMON Dependencies
@@ -43,8 +52,17 @@
         cmd: pipenv sync
         chdir: /home/{{ user }}/bmon/
 
+    - name: Make a BMON Storage Key
+      shell:
+        cmd: pwgen 12 1
+      register: store_key
+
+    - name: Make a Django Secret Key
+      shell:
+        cmd: pwgen 20 1
+      register: django_secret_key
+
     - name: Make a BMON settings.py file from a template
       ansible.builtin.template:
-        src: /home/{{ user }}/bmon/bmon/settings_example.py
-        dest: /home/{{ user }}/bmon/bmon/settings.py
-          
+        src: "/home/{{ user }}/bmon/bmon/settings_example.py"
+        dest: "/home/{{ user }}/bmon/bmon/settings.py"
