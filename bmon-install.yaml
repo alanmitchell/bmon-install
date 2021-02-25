@@ -12,6 +12,9 @@
     - email_smtp_host:  smtp.gmail.com
     - email_username: something@gmail.com
     - email_password: PasswordForAbove
+    - superuser_name: admin
+    - superuser_password: password
+    - superuser_email: super@gmail.com
 
   tasks:
     - name: Install system packages
@@ -66,3 +69,18 @@
       ansible.builtin.template:
         src: "/home/{{ user }}/bmon/bmon/settings_example.py"
         dest: "/home/{{ user }}/bmon/bmon/settings.py"
+
+    - name: Run a number of manage.py commands on the Django app
+      shell:
+        cmd: pipenv run python manage.py {{ item }}
+        chdir: /home/{{ user }}/bmon/
+      loop:
+        - makemigrations
+        - migrate
+        - collectstatic --noinput
+        - loaddata init_data.yaml
+
+    - name: Create the super user
+      shell:
+        cmd: echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('{{ superuser_name }}', '{{ superuser_email }}', '{{ superuser_password }}')" | pipenv run python manage.py shell
+        chdir: /home/{{ user }}/bmon/

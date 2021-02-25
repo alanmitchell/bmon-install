@@ -1,0 +1,19 @@
+[Unit]
+Description=BMON gunicorn daemon
+Requires=bmon.socket
+After=network.target
+
+[Service]
+User={{ user }}
+Group=www-data
+WorkingDirectory=/home/{{ user }}/bmon
+ExecStart=/home/{{ user }}/.local/share/virtualenvs/bmon-5JgjQ7-h/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/bmon.sock \
+          bmon.wsgi:application
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
