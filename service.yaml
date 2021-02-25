@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  vars:
+    - user: bmon
+
+  tasks:
+    - name: Find the virtual env directory
+      shell:
+        cmd: pipenv --venv
+        chdir: /home/{{ user }}/bmon
+      register: venv_dir
+
+    - name:
+      debug:
+        msg: "{{ venv_dir.stdout }}"

@@ -1,0 +1,8 @@
+[Unit]
+Description=BMON gunicorn socket
+
+[Socket]
+ListenStream=/run/bmon.sock
+
+[Install]
+WantedBy=sockets.target

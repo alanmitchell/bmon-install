@@ -7,7 +7,7 @@ After=network.target
 User={{ user }}
 Group=www-data
 WorkingDirectory=/home/{{ user }}/bmon
-ExecStart=/home/{{ user }}/.local/share/virtualenvs/bmon-5JgjQ7-h/bin/gunicorn \
+ExecStart={{ venv_dir }}/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/bmon.sock \
