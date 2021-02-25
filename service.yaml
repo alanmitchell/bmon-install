@@ -10,6 +10,14 @@
         chdir: /home/{{ user }}/bmon
       register: venv_dir
 
-    - name:
-      debug:
-        msg: "{{ venv_dir.stdout }}"
+    - name: Make systemd service files
+      become: yes
+      ansible.builtin.template:
+        src: /home/{{ user }}/bmon-install/bmon.service.j2
+        dest: /etc/systemd/system/bmon.service
+
+    - name: Make socket file
+      become: yes
+      copy:
+        src: /home/{{ user }}/bmon-install/bmon.socket
+        dest: /etc/systemd/system/bmon.socket
