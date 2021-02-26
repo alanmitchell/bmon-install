@@ -2,6 +2,7 @@
 - hosts: localhost
   vars:
     - user: bmon
+    - server_ip: 192.241.198.236
 
   tasks:
     - name: Find the virtual env directory
@@ -21,3 +22,42 @@
       copy:
         src: /home/{{ user }}/bmon-install/bmon.socket
         dest: /etc/systemd/system/bmon.socket
+
+    - name: Start and Enable the socket
+      become: yes
+      ansible.builtin.systemd:
+        name: bmon.socket
+        state: started
+        enabled: yes
+
+    - name: Make Nginx site file
+      become: yes
+      ansible.builtin.template:
+        src: /home/{{ user }}/bmon-install/nginx-bmon.j2
+        dest: /etc/nginx/sites-available/bmon
+
+    - name: Create a symbolic link to enable site
+      become: yes
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/bmon
+        dest: /etc/nginx/sites-enabled/bmon
+        state: link
+
+    - name: Restart Nginx
+      become: yes
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
+
+    - name: Make sure SSH is enabled on UFW firewall
+      become: yes
+      ufw:
+        rule: allow
+        name: ssh
+
+    - name: Allow Nginx ports in firewall
+      become: yes
+      ufw:
+        state: enabled
+        rule: allow
+        name: Nginx Full
