@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  vars:
+    - home_dir: "{{ lookup('env', 'HOME') }}"
+
+  tasks:
+  - name: Test Task
+    debug:
+      msg: "{{ home_dir }}"

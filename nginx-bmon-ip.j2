@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name {{ bmon_domain }} www.{{ bmon_domain }};
+    server_name {{ server_ip }};
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {

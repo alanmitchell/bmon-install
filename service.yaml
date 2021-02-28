@@ -3,6 +3,7 @@
   vars:
     - user: bmon
     - server_ip: 192.241.198.236
+    - bmon_domain: test.bmon.org
 
   tasks:
     - name: Find the virtual env directory
@@ -30,13 +31,26 @@
         state: started
         enabled: yes
 
-    - name: Make Nginx site file
+    - name: Make Nginx site file for raw IP address
+      become: yes
+      ansible.builtin.template:
+        src: /home/{{ user }}/bmon-install/nginx-bmon-ip.j2
+        dest: /etc/nginx/sites-available/bmon-ip
+
+    - name: Create a symbolic link to enable site for IP address
+      become: yes
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/bmon-ip
+        dest: /etc/nginx/sites-enabled/bmon-ip
+        state: link
+
+    - name: Make Nginx site file for domain
       become: yes
       ansible.builtin.template:
         src: /home/{{ user }}/bmon-install/nginx-bmon.j2
         dest: /etc/nginx/sites-available/bmon
 
-    - name: Create a symbolic link to enable site
+    - name: Create a symbolic link to enable site for domain
       become: yes
       ansible.builtin.file:
         src: /etc/nginx/sites-available/bmon
@@ -53,7 +67,7 @@
       become: yes
       ufw:
         rule: allow
-        name: ssh
+        name: OpenSSH
 
     - name: Allow Nginx ports in firewall
       become: yes

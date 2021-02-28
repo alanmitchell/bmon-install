@@ -2,12 +2,15 @@
 - hosts: localhost
   vars:
     - user: bmon
+    - server_ip: 192.241.198.236
+    - bmon_domain: test.bmon.org
     - bmon_site_title: BMON Test Site
     - admin_email_name: Alan Mitchell
     - admin_email_address: tabb99@gmail.com
     - allowed_hosts:
-      - bmontest.org
-      - 192.241.198.236
+      - "{{ bmon_domain }}"
+      - www.{{ bmon_domain }}
+      - "{{ server_ip }}"
       - localhost
     - email_smtp_host:  smtp.gmail.com
     - email_username: something@gmail.com
@@ -31,6 +34,8 @@
           - pwgen
           - tree
           - unzip
+          - certbot 
+          - python3-certbot-nginx
         state: latest
 
     - name: Upgrade pip
