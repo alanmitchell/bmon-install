@@ -1,9 +1,11 @@
 ---
 - hosts: localhost
   vars:
-    - home_dir: "{{ lookup('env', 'HOME') }}"
+    - install_dir: "{{ lookup('env', 'HOME') }}/bmon"
+    - bmon_domain: test.bmon.org
 
   tasks:
-  - name: Test Task
-    debug:
-      msg: "{{ home_dir }}"
+  - name: Certbot test
+    become: yes
+    shell:
+      cmd: certbot --nginx --noninteractive --agree-tos -m tabb99@gmail.com --redirect -d {{ bmon_domain }} -d www.{{ bmon_domain }}
