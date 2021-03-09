@@ -2,6 +2,8 @@
 - hosts: localhost
   vars:
     - user: bmon
+    - install_dir: "{{ lookup('env', 'HOME') }}/bmon"
+    - ansible_script_dir: "{{ lookup('env', 'HOME') }}/bmon-install"
     - server_ip: 192.241.198.236
     - bmon_domain: test.bmon.org
     - bmon_site_title: BMON Test Site
@@ -53,14 +55,14 @@
     - name: Clone BMON Repository
       git:
         repo: https://github.com/alanmitchell/bmon.git
-        dest: /home/{{ user }}/bmon
+        dest: "{{ install_dir }}"
         force: no
         version: bare-server
 
     - name: Install BMON Dependencies
       shell:
         cmd: pipenv sync
-        chdir: /home/{{ user }}/bmon/
+        chdir: "{{ install_dir }}"
 
     - name: Make a BMON Storage Key
       shell:
@@ -74,13 +76,13 @@
 
     - name: Make a BMON settings.py file from a template
       ansible.builtin.template:
-        src: "/home/{{ user }}/bmon/bmon/settings_example.py"
-        dest: "/home/{{ user }}/bmon/bmon/settings.py"
+        src: "{{ install_dir }}"/bmon/settings_example.py"
+        dest: "{{ install_dir }}"/bmon/settings.py"
 
     - name: Run a number of manage.py commands on the Django app
       shell:
         cmd: pipenv run python manage.py {{ item }}
-        chdir: /home/{{ user }}/bmon/
+        chdir: "{{ install_dir }}"
       loop:
         - makemigrations
         - migrate
@@ -90,24 +92,24 @@
     - name: Create the super user
       shell:
         cmd: echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('{{ superuser_name }}', '{{ superuser_email }}', '{{ superuser_password }}')" | pipenv run python manage.py shell
-        chdir: /home/{{ user }}/bmon/
+        chdir: "{{ install_dir }}"
 
     - name: Find the virtual env directory
       shell:
         cmd: pipenv --venv
-        chdir: /home/{{ user }}/bmon
+        chdir: "{{ install_dir }}"
       register: venv_dir
 
     - name: Make systemd service files
       become: yes
       ansible.builtin.template:
-        src: /home/{{ user }}/bmon-install/bmon.service.j2
+        src: "{{ ansible_script_dir }}"/bmon.service.j2
         dest: /etc/systemd/system/bmon.service
 
     - name: Make socket file
       become: yes
       copy:
-        src: /home/{{ user }}/bmon-install/bmon.socket
+        src: "{{ ansible_script_dir }}"/bmon.socket
         dest: /etc/systemd/system/bmon.socket
 
     - name: Start and Enable the socket
@@ -120,7 +122,7 @@
     - name: Make Nginx site file for raw IP address
       become: yes
       ansible.builtin.template:
-        src: /home/{{ user }}/bmon-install/nginx-bmon-ip.j2
+        src: "{{ ansible_script_dir }}"/nginx-bmon-ip.j2
         dest: /etc/nginx/sites-available/bmon-ip
 
     - name: Create a symbolic link to enable site for IP address
@@ -133,7 +135,7 @@
     - name: Make Nginx site file for domain
       become: yes
       ansible.builtin.template:
-        src: /home/{{ user }}/bmon-install/nginx-bmon.j2
+        src: "{{ ansible_script_dir }}"/nginx-bmon.j2
         dest: /etc/nginx/sites-available/bmon
 
     - name: Create a symbolic link to enable site for domain

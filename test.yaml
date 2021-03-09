@@ -1,11 +1,13 @@
 ---
 - hosts: localhost
   vars:
-    - install_dir: "{{ lookup('env', 'HOME') }}/bmon"
+    - install_dir: "{{ lookup('env', 'HOME') }}/test/"
     - bmon_domain: test.bmon.org
 
   tasks:
-  - name: Certbot test
-    become: yes
-    shell:
-      cmd: certbot --nginx --noninteractive --agree-tos -m tabb99@gmail.com --redirect -d {{ bmon_domain }} -d www.{{ bmon_domain }}
+    - name: Clone BMON Repository
+      git:
+        repo: https://github.com/alanmitchell/bmon.git
+        dest: "{{ install_dir }}"
+        force: no
+        version: bare-server
