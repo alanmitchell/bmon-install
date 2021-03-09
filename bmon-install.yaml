@@ -1,170 +1,151 @@
 ---
 - hosts: localhost
-  vars:
-    - user: bmon
-    - install_dir: "{{ lookup('env', 'HOME') }}/bmon"
-    - ansible_script_dir: "{{ lookup('env', 'HOME') }}/bmon-install"
-    - server_ip: 192.241.198.236
-    - bmon_domain: test.bmon.org
-    - bmon_site_title: BMON Test Site
-    - admin_email_name: Alan Mitchell
-    - admin_email_address: tabb99@gmail.com
-    - allowed_hosts:
-      - "{{ bmon_domain }}"
-      - www.{{ bmon_domain }}
-      - "{{ server_ip }}"
-      - localhost
-    - email_smtp_host:  smtp.gmail.com
-    - email_username: something@gmail.com
-    - email_password: PasswordForAbove
-    - superuser_name: admin
-    - superuser_password: password
-    - superuser_email: super@gmail.com
-    - lets_encrypt_email: {{ admin_email_address }}
+  vars_files:
+    - variables.yaml
 
   tasks:
-    - name: Install system packages
-      become: yes
-      apt: 
-        name:
-          - git 
-          - pipenv
-          - python3-pip 
-          - python3-dev 
-          - nginx 
-          - ufw
-          - curl 
-          - sqlite3
-          - pwgen
-          - tree
-          - unzip
-          - certbot 
-          - python3-certbot-nginx
-        state: latest
+  - name: Install system packages
+    become: yes
+    apt: 
+      name:
+        - git 
+        - pipenv
+        - python3-pip 
+        - python3-dev 
+        - nginx 
+        - ufw
+        - curl 
+        - sqlite3
+        - pwgen
+        - tree
+        - unzip
+        - certbot 
+        - python3-certbot-nginx
+      state: latest
 
-    - name: Upgrade pip
-      become: yes
-      pip:
-        name: pip
-        extra_args: --upgrade
+  - name: Upgrade pip
+    become: yes
+    pip:
+      name: pip
+      extra_args: --upgrade
 
-    - name: Install visidata data viewing tool
-      pip:
-        name: visidata
+  - name: Install visidata data viewing tool
+    pip:
+      name: visidata
 
-    - name: Clone BMON Repository
-      git:
-        repo: https://github.com/alanmitchell/bmon.git
-        dest: "{{ install_dir }}"
-        force: no
-        version: bare-server
+  - name: Clone BMON Repository
+    git:
+      repo: https://github.com/alanmitchell/bmon.git
+      dest: "{{ install_dir }}"
+      force: no
+      version: bare-server
 
-    - name: Install BMON Dependencies
-      shell:
-        cmd: pipenv sync
-        chdir: "{{ install_dir }}"
+  - name: Install BMON Dependencies
+    shell:
+      cmd: pipenv sync
+      chdir: "{{ install_dir }}"
 
-    - name: Make a BMON Storage Key
-      shell:
-        cmd: pwgen 12 1
-      register: store_key
+  - name: Make a BMON Storage Key
+    shell:
+      cmd: pwgen 12 1
+    register: store_key
 
-    - name: Make a Django Secret Key
-      shell:
-        cmd: pwgen 20 1
-      register: django_secret_key
+  - name: Make a Django Secret Key
+    shell:
+      cmd: pwgen 20 1
+    register: django_secret_key
 
-    - name: Make a BMON settings.py file from a template
-      ansible.builtin.template:
-        src: "{{ install_dir }}"/bmon/settings_example.py"
-        dest: "{{ install_dir }}"/bmon/settings.py"
+  - name: Make a BMON settings.py file from a template
+    ansible.builtin.template:
+      src: "{{ install_dir }}/bmon/settings_example.py"
+      dest: "{{ install_dir }}/bmon/settings.py"
 
-    - name: Run a number of manage.py commands on the Django app
-      shell:
-        cmd: pipenv run python manage.py {{ item }}
-        chdir: "{{ install_dir }}"
-      loop:
-        - makemigrations
-        - migrate
-        - collectstatic --noinput
-        - loaddata init_data.yaml
+  - name: Run a number of manage.py commands on the Django app
+    shell:
+      cmd: pipenv run python manage.py {{ item }}
+      chdir: "{{ install_dir }}"
+    loop:
+      - makemigrations
+      - migrate
+      - collectstatic --noinput
+      - loaddata init_data.yaml
 
-    - name: Create the super user
-      shell:
-        cmd: echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('{{ superuser_name }}', '{{ superuser_email }}', '{{ superuser_password }}')" | pipenv run python manage.py shell
-        chdir: "{{ install_dir }}"
+  - name: Create the super user
+    shell:
+      cmd: echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('{{ superuser_name }}', '{{ superuser_email }}', '{{ superuser_password }}')" | pipenv run python manage.py shell
+      chdir: "{{ install_dir }}"
 
-    - name: Find the virtual env directory
-      shell:
-        cmd: pipenv --venv
-        chdir: "{{ install_dir }}"
-      register: venv_dir
+  - name: Find the virtual env directory
+    shell:
+      cmd: pipenv --venv
+      chdir: "{{ install_dir }}"
+    register: venv_dir
 
-    - name: Make systemd service files
-      become: yes
-      ansible.builtin.template:
-        src: "{{ ansible_script_dir }}"/bmon.service.j2
-        dest: /etc/systemd/system/bmon.service
+  - name: Make systemd service files
+    become: yes
+    ansible.builtin.template:
+      src: "{{ ansible_script_dir }}/bmon.service.j2"
+      dest: /etc/systemd/system/bmon.service
 
-    - name: Make socket file
-      become: yes
-      copy:
-        src: "{{ ansible_script_dir }}"/bmon.socket
-        dest: /etc/systemd/system/bmon.socket
+  - name: Make socket file
+    become: yes
+    copy:
+      src: "{{ ansible_script_dir }}/bmon.socket"
+      dest: /etc/systemd/system/bmon.socket
 
-    - name: Start and Enable the socket
-      become: yes
-      ansible.builtin.systemd:
-        name: bmon.socket
-        state: started
-        enabled: yes
+  - name: Start and Enable the socket
+    become: yes
+    ansible.builtin.systemd:
+      name: bmon.socket
+      state: started
+      enabled: yes
 
-    - name: Make Nginx site file for raw IP address
-      become: yes
-      ansible.builtin.template:
-        src: "{{ ansible_script_dir }}"/nginx-bmon-ip.j2
-        dest: /etc/nginx/sites-available/bmon-ip
+  - name: Make Nginx site file for raw IP address
+    become: yes
+    ansible.builtin.template:
+      src: "{{ ansible_script_dir }}/nginx-bmon-ip.j2"
+      dest: /etc/nginx/sites-available/bmon-ip
 
-    - name: Create a symbolic link to enable site for IP address
-      become: yes
-      ansible.builtin.file:
-        src: /etc/nginx/sites-available/bmon-ip
-        dest: /etc/nginx/sites-enabled/bmon-ip
-        state: link
+  - name: Create a symbolic link to enable site for IP address
+    become: yes
+    ansible.builtin.file:
+      src: /etc/nginx/sites-available/bmon-ip
+      dest: /etc/nginx/sites-enabled/bmon-ip
+      state: link
 
-    - name: Make Nginx site file for domain
-      become: yes
-      ansible.builtin.template:
-        src: "{{ ansible_script_dir }}"/nginx-bmon.j2
-        dest: /etc/nginx/sites-available/bmon
+  - name: Make Nginx site file for domain
+    become: yes
+    ansible.builtin.template:
+      src: "{{ ansible_script_dir }}/nginx-bmon.j2"
+      dest: /etc/nginx/sites-available/bmon
 
-    - name: Create a symbolic link to enable site for domain
-      become: yes
-      ansible.builtin.file:
-        src: /etc/nginx/sites-available/bmon
-        dest: /etc/nginx/sites-enabled/bmon
-        state: link
+  - name: Create a symbolic link to enable site for domain
+    become: yes
+    ansible.builtin.file:
+      src: /etc/nginx/sites-available/bmon
+      dest: /etc/nginx/sites-enabled/bmon
+      state: link
 
-    - name: Restart Nginx
-      become: yes
-      ansible.builtin.systemd:
-        name: nginx
-        state: restarted
+  - name: Restart Nginx
+    become: yes
+    ansible.builtin.systemd:
+      name: nginx
+      state: restarted
 
-    - name: Make sure SSH is enabled on UFW firewall
-      become: yes
-      ufw:
-        rule: allow
-        name: OpenSSH
+  - name: Make sure SSH is enabled on UFW firewall
+    become: yes
+    ufw:
+      rule: allow
+      name: OpenSSH
 
-    - name: Allow Nginx ports in firewall
-      become: yes
-      ufw:
-        state: enabled
-        rule: allow
-        name: Nginx Full
+  - name: Allow Nginx ports in firewall
+    become: yes
+    ufw:
+      state: enabled
+      rule: allow
+      name: Nginx Full
 
-    - name: Install Let's Encrypt Certificate
-      become: yes
-      shell:
-        cmd: certbot --nginx --noninteractive --agree-tos -m {{ lets_encrypt_email }} --redirect -d {{ bmon_domain }} -d www.{{ bmon_domain }}
+  - name: Install Let's Encrypt Certificate
+    become: yes
+    shell:
+      cmd: certbot --nginx --noninteractive --agree-tos -m {{ lets_encrypt_email }} --redirect -d {{ bmon_domain }} -d www.{{ bmon_domain }}
