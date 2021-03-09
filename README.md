@@ -13,3 +13,6 @@ TO DO:
   config file, but not the credentials file.
 * Maybe add the backup cron job and comment out, or just let it error out until
   credential file is installed.
+* Have Flag as a variable for determining whether to install a Let's Encrypt
+  certificate or not.
+* Install UFW firewall.
