@@ -4,6 +4,30 @@
     - variables.yaml
 
   tasks:
+
+  - name: Get the username running the installation
+    become: false
+    shell: 
+      cmd: whoami
+    register: username
+
+  - name: Stop Nginx
+    become: yes
+    ansible.builtin.systemd:
+      name: nginx
+      state: stopped
+
+  - name: Stop the BMON socket
+    become: yes
+    ansible.builtin.systemd:
+      name: bmon.socket
+      state: stopped
+
+  - name: Delete Install Directory if Present
+    ansible.builtin.file:
+      path: "{{ install_dir }}"
+      state: absent
+
   - name: Install system packages
     become: yes
     apt: 

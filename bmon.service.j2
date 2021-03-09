@@ -4,9 +4,9 @@ Requires=bmon.socket
 After=network.target
 
 [Service]
-User={{ user }}
+User={{ username.stdout }}
 Group=www-data
-WorkingDirectory=/home/{{ user }}/bmon
+WorkingDirectory={{ install_dir }}
 ExecStart={{ venv_dir.stdout }}/bin/gunicorn \
           --access-logfile - \
           --workers 3 \

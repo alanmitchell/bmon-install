@@ -3,6 +3,7 @@ Ansible scripts for installing the BMON building monitoring software.
 
 ## TO DO:
 
+* Include AWS CLI in main script.
 * Set up .aws directory in preparation for credentials.  Maybe put in the 
   config file, but not the credentials file.
 * Maybe add the backup cron job and comment out, or just let it error out until
