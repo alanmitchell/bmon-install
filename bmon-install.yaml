@@ -99,6 +99,12 @@
       cmd: echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('{{ superuser_name }}', '{{ superuser_email }}', '{{ superuser_password }}')" | pipenv run python manage.py shell
       chdir: "{{ install_dir }}"
 
+  - name: Make sure the main BMON cron job is present.
+    ansible.builtin.cron:
+      name: Main BMON Cron job
+      minute: "*/5"
+      job: "cd {{ install_dir }} && pipenv run python manage.py runscript main_cron > /dev/null 2>&1"
+
   - name: Find the virtual env directory
     shell:
       cmd: pipenv --venv
@@ -173,3 +179,38 @@
     become: yes
     shell:
       cmd: certbot --nginx --noninteractive --agree-tos -m {{ lets_encrypt_email }} --redirect -d {{ bmon_domain }} -d www.{{ bmon_domain }}
+
+  - name: Include Task list to install AWS CLI.
+    include_tasks: awscli.yaml
+
+  - name: Insert bmon profile in AWS config file
+    blockinfile:
+      path: "{{ lookup('env', 'HOME') }}/.aws/config"
+      block: |
+        [bmon]
+        region = us-west-2
+        output = json
+
+  - name: Insert bmon profile in AWS credentials file
+    blockinfile:
+      path: "{{ lookup('env', 'HOME') }}/.aws/credentials"
+      block: |
+        [bmon]
+        aws_access_key_id = PUT_ACCESS_KEY_HERE
+        aws_secret_access_key = PUT_SECRET_KEY_HERE
+
+  - name: Make sure the Django database backup cron job is present.
+    ansible.builtin.cron:
+      name: BMON Django Datbase Backup Cron job
+      minute: "18"
+      hour: "11,23"
+      job: "aws s3 sync {{ install_dir }}/bak s3://bmon-backup.analysisnorth.com/{{ bmon_domain }}/django"
+      disabled: yes
+
+  - name: Make sure the Sensor Reading database backup cron job is present.
+    ansible.builtin.cron:
+      name: BMON Sensor Reading Datbase Backup Cron job
+      minute: "25"
+      hour: "11,23"
+      job: "aws s3 sync {{ install_dir }}/bmsapp/readingdb/data/bak  s3://bmon-backup.analysisnorth.com/{{ bmon_domain }}/data --storage-class ONEZONE_IA"
+      disabled: yes

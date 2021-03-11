@@ -3,12 +3,7 @@ Ansible scripts for installing the BMON building monitoring software.
 
 ## TO DO:
 
-* Put bmon cron job in cron!
-* Include AWS CLI in main script.
-* Set up .aws directory in preparation for credentials.  Maybe put in the 
-  config file, but not the credentials file.
-* Maybe add the backup cron job and comment out, or just let it error out until
-  credential file is installed.
+* Test database backups
 * Have Flag as a variable for determining whether to install a Let's Encrypt
   certificate or not.
 * Use the `hostname -I | cut -d " " -f 1` command to find the IP and then set as
@@ -24,3 +19,5 @@ Ansible scripts for installing the BMON building monitoring software.
 * Install Ansible, Git (or do this in the bootstrap Ansible script below)
 * Clone the bmon-install project, perhaps with a short Ansible script
 * Edit the variables.yaml file, as appropriate
+* Run a shell script that runs the Ansible playbook.  Easier to type a script name.
+* Get credentials from analysisnorth for backup, enter in ~/.aws/credentials, uncomment cron jobs

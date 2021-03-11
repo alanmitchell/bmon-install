@@ -1,33 +1,44 @@
----
-- hosts: localhost
-  vars:
-    - user: 'bmon'
-    - ssh_key: '.ssh/id_rsa'
+- name: Create temporary build directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: awsbuild
+  register: awscli_build
 
-  tasks:
-    - name: Create temporary build directory
-      ansible.builtin.tempfile:
-        state: directory
-        suffix: build
-      register: awscli_build
+- name: Get AWS CLI
+  get_url:
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: "{{ awscli_build.path }}/awscliv2.zip"
 
-    - name: Get AWS CLI
-      get_url:
-        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-        dest: "{{ awscli_build.path }}/awscliv2.zip"
+- name: Unzip AWS CLI
+  ansible.builtin.unarchive:
+    src: "{{ awscli_build.path }}/awscliv2.zip"
+    dest: "{{ awscli_build.path }}"
 
-    - name: Unzip AWS CLI
-      ansible.builtin.unarchive:
-        src: "{{ awscli_build.path }}/awscliv2.zip"
-        dest: "{{ awscli_build.path }}"
+- name: Install AWS CLI
+  become: yes
+  shell:
+    cmd: ./aws/install --update
+    chdir: "{{ awscli_build.path }}"
 
-    - name: Install AWS CLI
-      become: yes
-      shell:
-        cmd: ./aws/install --update
-        chdir: "{{ awscli_build.path }}"
+- name: Remove the temporary directory
+  ansible.builtin.file:
+    path: "{{ awscli_build.path }}"
+    state: absent
 
-    - name: Remove the temporary directory
-      ansible.builtin.file:
-        path: "{{ awscli_build.path }}"
-        state: absent
+- name: Create the .aws directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.aws"
+    state: directory
+    mode: "0700"
+
+- name: Create a config file if it does not exist
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.aws/config"
+    state: touch
+    mode: "0600"
+
+- name: Create a credentials file if it does not exist
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.aws/credentials"
+    state: touch
+    mode: "0600"

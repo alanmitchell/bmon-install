@@ -1,13 +1,21 @@
 ---
 - hosts: localhost
-  vars:
-    - install_dir: "{{ lookup('env', 'HOME') }}/test/"
-    - bmon_domain: test.bmon.org
+  vars_files:
+    - variables.yaml
 
   tasks:
-    - name: Clone BMON Repository
-      git:
-        repo: https://github.com/alanmitchell/bmon.git
-        dest: "{{ install_dir }}"
-        force: no
-        version: bare-server
+  - name: Make sure the Django database backup cron job is present.
+    ansible.builtin.cron:
+      name: BMON Django Datbase Backup Cron job
+      minute: "18"
+      hour: "11,23"
+      job: "aws s3 sync {{ install_dir }}/bak s3://bmon-backup.analysisnorth.com/{{ bmon_domain }}/django"
+      disabled: yes
+
+  - name: Make sure the Sensor Reading database backup cron job is present.
+    ansible.builtin.cron:
+      name: BMON Sensor Reading Datbase Backup Cron job
+      minute: "25"
+      hour: "11,23"
+      job: "aws s3 sync {{ install_dir }}/bmsapp/readingdb/data/bak  s3://bmon-backup.analysisnorth.com/{{ bmon_domain }}/data --storage-class ONEZONE_IA"
+      disabled: yes
