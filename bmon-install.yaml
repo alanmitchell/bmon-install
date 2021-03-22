@@ -215,7 +215,7 @@
       cmd: which aws
     register: aws_path
   
-  - name: Make sure the Django database backup cron job is present.
+  - name: Make sure the Django database backup cron job is present but disabled.
     ansible.builtin.cron:
       name: BMON Django Datbase Backup Cron job
       minute: "18"
@@ -223,7 +223,7 @@
       job: "{{ aws_path.stdout }} s3 sync {{ install_dir }}/bak s3://bmon-backup.analysisnorth.com/{{ bmon_domain }}/django --profile bmon"
       disabled: yes
 
-  - name: Make sure the Sensor Reading database backup cron job is present.
+  - name: Make sure the Sensor Reading database backup cron job is present but disabled.
     ansible.builtin.cron:
       name: BMON Sensor Reading Datbase Backup Cron job
       minute: "25"
