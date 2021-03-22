@@ -1,20 +1,15 @@
 # Values to fill out for the install process.
 install_dir: "{{ lookup('env', 'HOME') }}/bmon"
 ansible_script_dir: "{{ lookup('env', 'HOME') }}/bmon-install"
-server_ip: 192.241.198.236
 bmon_domain: test.bmon.org
 bmon_site_title: BMON Test Site
 admin_email_name: Alan Mitchell
 admin_email_address: tabb99@gmail.com
-allowed_hosts:
-  - "{{ bmon_domain }}"
-  - www.{{ bmon_domain }}
-  - "{{ server_ip }}"
-  - localhost
 email_smtp_host:  smtp.gmail.com
 email_username: something@gmail.com
 email_password: PasswordForAbove
 superuser_name: admin
 superuser_password: password
 superuser_email: super@gmail.com
+install_lets_encrypt: yes
 lets_encrypt_email: "{{ admin_email_address }}"

@@ -6,10 +6,14 @@
   tasks:
 
   - name: Get the username running the installation
-    become: false
     shell: 
       cmd: whoami
     register: username
+
+  - name: Get the IP Address of this server
+    shell: 
+      cmd: hostname -I | cut -d " " -f 1
+    register: server_ip
 
   - name: Stop Nginx
     become: yes
@@ -156,6 +160,11 @@
       dest: /etc/nginx/sites-enabled/bmon
       state: link
 
+  - name: Disable default Nginx site
+    ansible.builtin.file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+
   - name: Restart Nginx
     become: yes
     ansible.builtin.systemd:
@@ -179,6 +188,7 @@
     become: yes
     shell:
       cmd: certbot --nginx --noninteractive --agree-tos -m {{ lets_encrypt_email }} --redirect -d {{ bmon_domain }} -d www.{{ bmon_domain }}
+    when: install_lets_encrypt | bool
 
   - name: Include Task list to install AWS CLI.
     include_tasks: awscli.yaml
