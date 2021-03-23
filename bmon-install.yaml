@@ -1,5 +1,9 @@
 ---
 - hosts: localhost
+
+  vars:
+    ansible_script_dir: "{{ lookup('env', 'HOME') }}/bmon-install"
+
   vars_files:
     - "{{ lookup('env', 'HOME') }}/.bmon/variables.yaml"
 

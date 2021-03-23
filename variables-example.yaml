@@ -1,6 +1,5 @@
 # Values to fill out for the install process.
 install_dir: "{{ lookup('env', 'HOME') }}/bmon"
-ansible_script_dir: "{{ lookup('env', 'HOME') }}/bmon-install"
 bmon_domain: test.bmon.org
 bmon_site_title: BMON Test Site
 admin_email_name: Alan Mitchell
