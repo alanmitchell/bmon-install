@@ -11,6 +11,7 @@ Ansible scripts for installing the BMON building monitoring software.
 ## Installation Procedure
 
 * Have an SMTP server available for use in Django.
+* Point the Domain Name to the IP of the installation server.
 * Ensure a non-root user is available and initiate the install process while logged in
   as that user.
 * Apt update & upgrade
