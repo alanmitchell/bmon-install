@@ -1,7 +1,7 @@
 ---
 - hosts: localhost
   vars_files:
-    - variables.yaml
+    - "{{ lookup('env', 'HOME') }}/.bmon/variables.yaml"
 
   tasks:
 
@@ -21,7 +21,7 @@
       name: nginx
       state: stopped
 
-  - name: Stop the BMON socket
+  - name: Stop the BMON socket, as it might be running from previous install.
     become: yes
     ansible.builtin.systemd:
       name: bmon.socket

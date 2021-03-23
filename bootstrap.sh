@@ -27,3 +27,4 @@ echo
 echo "Then, run the BMON installation script:"
 echo
 echo "    bmon-install/install.sh"
+echo
