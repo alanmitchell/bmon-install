@@ -22,9 +22,10 @@ echo
 echo "Edit the 'variables.yaml' file in the .bmon directory,"
 echo "for example:"
 echo 
-echo "    nano .bmon/variables.yaml"
+echo "    nano ~/.bmon/variables.yaml"
 echo
 echo "Then, run the BMON installation script:"
 echo
-echo "    bmon-install/install.sh"
+echo "    ~/bmon-install/install.sh"
 echo
+echo " If asked for a 'BECOME password', use your sudo password."

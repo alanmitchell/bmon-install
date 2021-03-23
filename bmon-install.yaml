@@ -234,3 +234,8 @@
       hour: "11,23"
       job: "{{ aws_path.stdout }} s3 sync {{ install_dir }}/bmsapp/readingdb/data/bak s3://bmon-backup.analysisnorth.com/{{ bmon_domain }}/data --storage-class ONEZONE_IA --profile bmon"
       disabled: yes
+
+  - name: Write a file of installation information.
+    ansible.builtin.template:
+      src: "{{ ansible_script_dir }}/INSTALLATION-INFO.j2"
+      dest: "{{ lookup('env', 'HOME') }}/.bmon/INSTALLATION-INFO.txt"
