@@ -17,8 +17,13 @@ git clone https://github.com/alanmitchell/bmon-install.git
 mkdir .bmon || true
 cp bmon-install/variables-example.yaml .bmon/variables.yaml
 
+echo
+echo
 echo "Edit the 'variables.yaml' file in the .bmon directory,"
-echo "for example: nano .bmon/variables.yaml"
+echo "for example:"
+echo 
+echo "    nano .bmon/variables.yaml"
+echo
 echo "Then, run the BMON installation script:"
 echo
 echo "    bmon-install/install.sh"
