@@ -15,6 +15,7 @@ cd ~
 rm -rf bmon-install
 git clone https://github.com/alanmitchell/bmon-install.git
 mkdir .bmon || true
+chmod 700 .bmon
 cp bmon-install/variables-example.yaml .bmon/variables.yaml
 
 echo
