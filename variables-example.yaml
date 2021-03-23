@@ -1,14 +1,51 @@
-# Values to fill out for the install process.
+# Fill out these values to control the installation of BMON on 
+# this system. After finishing with this file, start the BMON
+# installation by executing:
+#    ~/bmon-install/install.sh
+
+# BMON is normally installed in the "bmon" directory in your 
+# home directory.  If that is OK leave the following variable alone.
+# If you'd like it in a different directory, change the "bmon" part of
+# the variable below.
 install_dir: "{{ lookup('env', 'HOME') }}/bmon"
+
+# Specifiy the domain or subdomain that will be used to access BMON.
+# Make sure that the DNS points the domain to this server.
 bmon_domain: test.bmon.org
+
+# The title that will appear at the top of each BMON page
 bmon_site_title: BMON Test Site
+
+# Error messages from the BMON system will be sent to the admin name and 
+# email below.
 admin_email_name: Alan Mitchell
 admin_email_address: tabb99@gmail.com
+
+# An SMTP email server and associated account is needed to allow BMON to
+# send emails for Alerts and error messages.  A Gmail account will work with
+# proper configuration.  See:
+#    https://dev.to/abderrahmanemustapha/how-to-send-email-with-django-and-gmail-in-production-the-right-way-24ab
+# or
+#    https://medium.com/@_christopher/how-to-send-emails-with-python-django-through-google-smtp-server-for-free-22ea6ea0fb8e
 email_smtp_host:  smtp.gmail.com
 email_username: something@gmail.com
 email_password: PasswordForAbove
+
+# You need to setup a Super User to access the System Administration side
+# of BMON.  Here you enter Log In name, password, and email for that Super User.
 superuser_name: admin
 superuser_password: password
 superuser_email: super@gmail.com
+
+# This installation script can aquire and automatically renew a
+# Let's Encrypt SSL security certificate for your BMON domain. 
+# Enter 'yes' below if you want that to occur, and enter an email address
+# to be associated with that certificate.  The existing setting for the
+# email address causes the above Admin email address to be used.
 install_lets_encrypt: yes
 lets_encrypt_email: "{{ admin_email_address }}"
+
+# After running install.sh, most of the above values are accessible
+# and can be changed in the ~/bmon/bmon/settings.py file, which can
+# be edited and saved.  The BMON daemon must be restarted for changes 
+# to occur:  sudo systemctl restart bmon
