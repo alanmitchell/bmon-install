@@ -13,6 +13,11 @@ install_dir: "{{ lookup('env', 'HOME') }}/bmon"
 # Make sure that the DNS points the domain to this server.
 bmon_domain: test.bmon.org
 
+# If you want to be able to access the BMON site through the IP
+# address of the server (in addition to a domain name), enter 'yes'
+# for the setting below.
+ip_address_access: yes
+
 # The title that will appear at the top of each BMON page
 bmon_site_title: BMON Test Site
 

@@ -143,6 +143,7 @@
     ansible.builtin.template:
       src: "{{ ansible_script_dir }}/nginx-bmon-ip.j2"
       dest: /etc/nginx/sites-available/bmon-ip
+    when: ip_address_access | bool
 
   - name: Create a symbolic link to enable site for IP address
     become: yes
@@ -150,6 +151,7 @@
       src: /etc/nginx/sites-available/bmon-ip
       dest: /etc/nginx/sites-enabled/bmon-ip
       state: link
+    when: ip_address_access | bool
 
   - name: Make Nginx site file for domain
     become: yes
