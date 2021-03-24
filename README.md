@@ -27,7 +27,8 @@ Before using the installation script, make sure the following steps are complete
   SSL certificate to secure these BMON domains.
 * Make sure the Linux Server is updated (apt update, apt upgrade).
 * BMON will be installed in a non-root user directory on the Linux server.  Ensure a non-root user 
-  with sudo privileges is available.
+  with sudo privileges is available. The commands `sudo adduser <username>` followed by
+  `sudo adduser <username> sudo` will add a new user with sudo privileges. 
 
 ### Installation
 
