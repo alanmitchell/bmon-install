@@ -4,9 +4,9 @@
 # main BMON install Ansible playbook can be run.
 
 # First get necessary packages with the package manager
-sudo apt install software-properties-common
+sudo apt install -y software-properties-common
 sudo apt-add-repository --yes --update ppa:ansible/ansible
-sudo apt install ansible git nano
+sudo apt install -y ansible git nano
 
 # Move to the home directory and clone the BMON install repo,
 # make a .bmon directory to hold variables and other info related
