@@ -153,6 +153,13 @@
       state: link
     when: ip_address_access | bool
 
+  - name: Remove IP address Nginx file if not requested
+    become: yes
+    ansible.builtin.file:
+      path: /etc/nginx/sites-enabled/bmon-ip
+      state: absent
+    when: not (ip_address_access | bool)
+
   - name: Make Nginx site file for domain
     become: yes
     ansible.builtin.template:
