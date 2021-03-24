@@ -77,3 +77,10 @@ In order to enable the backups, a couple steps must be completed.
 * Edit the crontab file by executing `crontab -e` and uncomment the two jobs related
   to BMON backup.  Those jobs are preceded with the comments
   `Ansible: BMON Django Datbase Backup Cron job` and `Ansible: BMON Sensor Reading Datbase Backup Cron job`.
+
+Also note that most of the settings that control BMON are found in the 
+`<BMON install directory>/bmon/settings.py` file (the BMON installation
+directory is usually `~/bmon`), and these settings can be changed at 
+any time after BMON is installed.  The settings are
+edited with a text editor; the BMON application needs to be restarted
+for the new settings to take effect (`sudo systemctl restart bmon`).
