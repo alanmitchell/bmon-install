@@ -20,7 +20,7 @@ Before using the installation script, make sure the following steps are complete
   day.  See [this article](https://dev.to/abderrahmanemustapha/how-to-send-email-with-django-and-gmail-in-production-the-right-way-24ab) or
   [this article](https://medium.com/@_christopher/how-to-send-emails-with-python-django-through-google-smtp-server-for-free-22ea6ea0fb8e) 
   for how to prepare a Gmail account for use.
-* Have a Domain for Subdomain that can be used by the BMON application. Make sure the DNS
+* Have a Domain or Subdomain that can be used by the BMON application. Make sure the DNS
   record for the domain or subdomain points to the IP address of the server where BMON
   will be installed. This installation script is able to acquire a free Let's Encrypt
   SSL certificate to secure the BMON domain.
