@@ -22,8 +22,9 @@ Before using the installation script, make sure the following steps are complete
   for how to prepare a Gmail account for use.
 * Have a Domain or Subdomain that can be used by the BMON application. Make sure the DNS
   record for the domain or subdomain points to the IP address of the server where BMON
-  will be installed. This installation script is able to acquire a free Let's Encrypt
-  SSL certificate to secure the BMON domain.
+  will be installed. Also, make sure there is a DNS record pointing to the server IP 
+  for www.<domain name>. This installation script is able to acquire a free Let's Encrypt
+  SSL certificate to secure these BMON domains.
 * Make sure the Linux Server is updated (apt update, apt upgrade).
 * BMON will be installed in a non-root user directory on the Linux server.  Ensure a non-root user 
   with sudo privileges is available.
@@ -61,6 +62,9 @@ When all of the tasks are complete, a PLAY RECAP is printed.  It should show
 "failed=0"; contact alan@analysisnorth.com if not.
 The BMON site should be available at the domain you entered in the variables.yaml file
 or at the IP address of the server, if you enabled IP access in the variables file.
+
+If you can fix an error that occurs when you run `install.sh`, it is safe to rerun
+the script to try the install again.
 
 The installation process also prepared the system for routine backups of the key
 BMON databases.  Those backup operations back up the databases to an AWS S3 bucket.
