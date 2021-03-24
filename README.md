@@ -55,8 +55,10 @@ When it asks for the "BECOME password", enter your sudo password.
 ~/bmon-install/install.sh
 ```
 
-Status messages are provided as each task runs.  The Ansible Playlist
-should complete without errors; contact alan@analysisnorth.com if any errors occur.
+Status messages are provided as each task runs.  Some tasks may produce errors
+but if there is an "...ignoring" message, the errors are not important.
+When all of the tasks are complete, a PLAY RECAP is printed.  It should show
+"failed=0"; contact alan@analysisnorth.com if not.
 The BMON site should be available at the domain you entered in the variables.yaml file
 or at the IP address of the server, if you enabled IP access in the variables file.
 
