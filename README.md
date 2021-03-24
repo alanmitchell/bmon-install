@@ -58,7 +58,7 @@ When it asks for the "BECOME password", enter your sudo password.
 Status messages are provided as each task runs.  The Ansible Playlist
 should complete without errors; contact alan@analysisnorth.com if any errors occur.
 The BMON site should be available at the domain you entered in the variables.yaml file
-or at the IP address of the server.
+or at the IP address of the server, if you enabled IP access in the variables file.
 
 The installation process also prepared the system for routine backups of the key
 BMON databases.  Those backup operations back up the databases to an AWS S3 bucket.
