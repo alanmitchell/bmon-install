@@ -30,3 +30,4 @@ echo
 echo "    ~/bmon-install/install.sh"
 echo
 echo " If asked for a 'BECOME password', use your sudo password."
+echo
