@@ -134,6 +134,7 @@
       name: bmon.socket
       state: started
       enabled: yes
+      daemon_reload: yes
 
   - name: Make Nginx site file for raw IP address
     become: yes
