@@ -1,12 +1,13 @@
 ---
 - hosts: localhost
 
-  vars:
-    ansible_script_dir: "{{ lookup('env', 'HOME') }}/bmon-install"
-
   vars_files:
     - "{{ lookup('env', 'HOME') }}/.bmon/variables.yaml"
 
+  vars:
+    ansible_script_dir: "{{ lookup('env', 'HOME') }}/bmon-install"
+    venv_dir: "{{ install_dir }}/env"
+    venv_python: "{{ venv_dir }}/bin/python"
   tasks:
 
   - name: Get the username running the installation
@@ -43,7 +44,6 @@
     apt: 
       name:
         - git 
-        - pipenv
         - python3-pip 
         - python3-dev 
         - nginx 
@@ -74,10 +74,10 @@
       force: no
       version: bare-server
 
-  - name: Install BMON Dependencies
-    shell:
-      cmd: pipenv sync
-      chdir: "{{ install_dir }}"
+  - name: Install BMON python requirements & create virtualenv
+    pip:
+      requirements: "{{ install_dir }}/requirements.txt"
+      virtualenv: "{{ venv_dir }}"
 
   - name: Make a BMON Storage Key
     shell:
@@ -96,7 +96,7 @@
 
   - name: Run a number of manage.py commands on the Django app
     shell:
-      cmd: pipenv run python manage.py {{ item }}
+      cmd: "{{ venv_python }} manage.py {{ item }}"
       chdir: "{{ install_dir }}"
     loop:
       - makemigrations
@@ -106,20 +106,14 @@
 
   - name: Create the super user
     shell:
-      cmd: echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('{{ superuser_name }}', '{{ superuser_email }}', '{{ superuser_password }}')" | pipenv run python manage.py shell
+      cmd: echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('{{ superuser_name }}', '{{ superuser_email }}', '{{ superuser_password }}')" | {{ venv_python }} manage.py shell
       chdir: "{{ install_dir }}"
 
   - name: Make sure the main BMON cron job is present.
     ansible.builtin.cron:
       name: Main BMON Cron job
       minute: "*/5"
-      job: "cd {{ install_dir }} && pipenv run python manage.py runscript main_cron > /dev/null 2>&1"
-
-  - name: Find the virtual env directory
-    shell:
-      cmd: pipenv --venv
-      chdir: "{{ install_dir }}"
-    register: venv_dir
+      job: "cd {{ install_dir }} && {{ venv_python }} manage.py runscript main_cron > /dev/null 2>&1"
 
   - name: Make systemd service files
     become: yes

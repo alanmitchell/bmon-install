@@ -7,7 +7,7 @@ After=network.target
 User={{ username.stdout }}
 Group=www-data
 WorkingDirectory={{ install_dir }}
-ExecStart={{ venv_dir.stdout }}/bin/gunicorn \
+ExecStart={{ venv_dir }}/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/bmon.sock \
