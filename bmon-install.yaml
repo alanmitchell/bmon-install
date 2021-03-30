@@ -64,6 +64,7 @@
       extra_args: --upgrade
 
   - name: Install visidata data viewing tool
+    become: yes
     pip:
       name: visidata
 
