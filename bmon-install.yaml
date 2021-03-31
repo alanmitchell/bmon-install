@@ -230,7 +230,7 @@
   
   - name: Make sure the Django database backup cron job is present but disabled.
     ansible.builtin.cron:
-      name: BMON Django Datbase Backup Cron job
+      name: BMON Django Database Backup Cron job
       minute: "18"
       hour: "11,23"
       job: "{{ aws_path.stdout }} s3 sync {{ install_dir }}/bak s3://bmon-backup.analysisnorth.com/{{ bmon_domain }}/django --profile bmon"
@@ -238,7 +238,7 @@
 
   - name: Make sure the Sensor Reading database backup cron job is present but disabled.
     ansible.builtin.cron:
-      name: BMON Sensor Reading Datbase Backup Cron job
+      name: BMON Sensor Reading Database Backup Cron job
       minute: "25"
       hour: "11,23"
       job: "{{ aws_path.stdout }} s3 sync {{ install_dir }}/bmsapp/readingdb/data/bak s3://bmon-backup.analysisnorth.com/{{ bmon_domain }}/data --storage-class ONEZONE_IA --profile bmon"
