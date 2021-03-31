@@ -63,10 +63,12 @@
       name: pip
       extra_args: --upgrade
 
-  - name: Install visidata data viewing tool
+  - name: Install visidata and virtualenv
     become: yes
     pip:
-      name: visidata
+      name: 
+        - visidata
+        - virtualenv
 
   - name: Clone BMON Repository
     git:
