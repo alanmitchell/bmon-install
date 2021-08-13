@@ -75,7 +75,7 @@
       repo: https://github.com/alanmitchell/bmon.git
       dest: "{{ install_dir }}"
       force: no
-      version: bare-server
+      version: master
 
   - name: Install BMON python requirements & create virtualenv
     pip:
