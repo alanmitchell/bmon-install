@@ -28,8 +28,8 @@ Before using the installation script, make sure the following steps are complete
 * Make sure the Linux Server is updated (apt update, apt upgrade).
 * The server needs to have Python 3.7 or higher installed.
 * BMON will be installed in a non-root user directory on the Linux server.  Ensure a non-root user 
-  with sudo privileges is available. The commands `sudo adduser <username>` followed by
-  `sudo adduser <username> sudo` will add a new user with sudo privileges. 
+  with sudo privileges is available. The commands `adduser <username>` followed by
+  `usermod -aG sudo <username>` will add a new user with sudo privileges. 
 
 ### Installation
 
