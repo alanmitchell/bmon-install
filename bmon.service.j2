@@ -11,6 +11,7 @@ ExecStart={{ venv_dir }}/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/bmon.sock \
+          --timeout 60 \
           bmon.wsgi:application
 Restart=on-failure
 RestartSec=5s
