@@ -21,6 +21,16 @@ ip_address_access: yes
 # The title that will appear at the top of each BMON page
 bmon_site_title: BMON Test Site
 
+# These variables customize the Privacy Policy and Terms & Conditions page.
+# See https://bmon.analysisnorth.com/policies/ 
+terms_company_name: Analysis North
+terms_address_1: 11400 Mountain Lake Dr
+terms_address_2: Anchorage, AK 99516
+terms_address_3: ---
+terms_email: alan@analysisnorth.com
+terms_bmon_url: https://bmon.analysisnorth.com
+terms_legal_jurisdiction: State of Alaska
+
 # Error messages from the BMON system will be sent to the admin name and 
 # email below.
 admin_email_name: Alan Mitchell
