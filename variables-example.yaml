@@ -21,6 +21,12 @@ ip_address_access: yes
 # The title that will appear at the top of each BMON page
 bmon_site_title: BMON Test Site
 
+# A Twilio Account with a Messaging Service must be set up to allow for SMS Text
+# Alerts to be sent by BMON. Below is the needed information from the account:
+twilio_account_sid: xxx
+twilio_auth_token: yyy
+twilio_msg_service_sid: zzz
+
 # These variables customize the Privacy Policy and Terms & Conditions page.
 # See https://bmon.analysisnorth.com/policies/ 
 terms_company_name: Analysis North
