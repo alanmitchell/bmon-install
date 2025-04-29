@@ -45,8 +45,6 @@
     apt: 
       name:
         - git 
-        - python3-pip 
-        - python3-dev 
         - nginx 
         - ufw
         - curl 
@@ -58,12 +56,6 @@
         - python3-certbot-nginx
         - mc
       state: latest
-
-  - name: Upgrade pip
-    become: yes
-    pip:
-      name: pip
-      extra_args: --upgrade
 
   - name: Install visidata
     shell: uv tool install visidata
