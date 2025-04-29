@@ -11,13 +11,11 @@
   tasks:
 
   - name: Get the username running the installation
-    shell: 
-      cmd: whoami
+    shell: whoami
     register: username
 
   - name: Get the IP Address of this server
-    shell: 
-      cmd: hostname -I | cut -d " " -f 1
+    shell: hostname -I | cut -d " " -f 1
     register: server_ip
 
   - name: Stop Nginx (may not be present yet, so ignore error)
@@ -40,8 +38,7 @@
       state: absent
 
   - name: Install uv Package Manger
-    shell:
-      cmd: curl -LsSf https://astral.sh/uv/install.sh | sh
+    shell: curl -LsSf https://astral.sh/uv/install.sh | sh
 
   - name: Install system packages
     become: yes
@@ -59,6 +56,7 @@
         - unzip
         - certbot 
         - python3-certbot-nginx
+        - mc
       state: latest
 
   - name: Upgrade pip
@@ -68,10 +66,7 @@
       extra_args: --upgrade
 
   - name: Install visidata
-    become: yes
-    pip:
-      name: 
-        - visidata
+    shell: uv tool install visidata
 
   - name: Clone BMON Repository
     git:
@@ -81,8 +76,8 @@
       version: master
 
   - name: Make Virtual Directory and Install BMON Python requirements
-    shell: uv sync
-    args:
+    shell: 
+      cmd: uv sync
       chdir: "{{ install_dir }}"
 
   - name: Make a BMON Storage Key
