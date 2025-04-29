@@ -6,7 +6,7 @@
 
   vars:
     ansible_script_dir: "{{ lookup('env', 'HOME') }}/bmon-install"
-    venv_dir: "{{ install_dir }}/env"
+    venv_dir: "{{ install_dir }}/.venv"
     venv_python: "{{ venv_dir }}/bin/python"
   tasks:
 
@@ -39,6 +39,10 @@
       path: "{{ install_dir }}"
       state: absent
 
+  - name: Install uv Package Manger
+    shell:
+      cmd: curl -LsSf https://astral.sh/uv/install.sh | sh
+
   - name: Install system packages
     become: yes
     apt: 
@@ -63,12 +67,11 @@
       name: pip
       extra_args: --upgrade
 
-  - name: Install visidata and virtualenv
+  - name: Install visidata
     become: yes
     pip:
       name: 
         - visidata
-        - virtualenv
 
   - name: Clone BMON Repository
     git:
@@ -77,10 +80,10 @@
       force: no
       version: master
 
-  - name: Install BMON python requirements & create virtualenv
-    pip:
-      requirements: "{{ install_dir }}/requirements.txt"
-      virtualenv: "{{ venv_dir }}"
+  - name: Make Virtual Directory and Install BMON Python requirements
+    shell: uv sync
+    args:
+      chdir: "{{ install_dir }}"
 
   - name: Make a BMON Storage Key
     shell:
