@@ -81,13 +81,11 @@
       chdir: "{{ install_dir }}"
 
   - name: Make a BMON Storage Key
-    shell:
-      cmd: pwgen 12 1
+    shell: pwgen 12 1
     register: store_key
 
   - name: Make a Django Secret Key
-    shell:
-      cmd: pwgen 20 1
+    shell: pwgen 20 1
     register: django_secret_key
 
   - name: Make a BMON settings.py file from a template
@@ -198,8 +196,7 @@
 
   - name: Install Let's Encrypt Certificate
     become: yes
-    shell:
-      cmd: certbot --nginx --noninteractive --agree-tos -m {{ lets_encrypt_email }} --redirect -d {{ bmon_domain }} -d www.{{ bmon_domain }}
+    shell: certbot --nginx --noninteractive --agree-tos -m {{ lets_encrypt_email }} --redirect -d {{ bmon_domain }} -d www.{{ bmon_domain }}
     when: install_lets_encrypt | bool
 
   - name: Include Task list to install AWS CLI.
@@ -222,8 +219,7 @@
         aws_secret_access_key = PUT_SECRET_KEY_HERE
 
   - name: Determine location of aws CLI utility
-    shell: 
-      cmd: which aws
+    shell: which aws
     register: aws_path
   
   - name: Make sure the Django database backup cron job is present but disabled.
