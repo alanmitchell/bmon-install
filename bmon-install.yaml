@@ -58,9 +58,7 @@
       state: latest
 
   - name: Install visidata
-    shell:
-      cmd: uv tool install visidata
-      executable: /usr/bin/bash -l -c
+    shell: /usr/bin/bash -l -c 'uv tool install visidata'
 
   - name: Clone BMON Repository
     git:
@@ -71,9 +69,8 @@
 
   - name: Make Virtual Directory and Install BMON Python requirements
     shell: 
-      cmd: uv sync
+      cmd: /usr/bin/bash -l -c  'uv sync'
       chdir: "{{ install_dir }}"
-      executable: /usr/bin/bash -l -c
 
   - name: Make a BMON Storage Key
     shell: pwgen 12 1
