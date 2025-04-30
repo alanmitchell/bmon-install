@@ -18,6 +18,13 @@
     shell: hostname -I | cut -d " " -f 1
     register: server_ip
 
+  - name: Ensure “others” can traverse Home directory
+    ansible.builtin.file:
+      path: "{{ lookup('env', 'HOME') }}"
+      state: directory
+      mode: '0711'      # owner=rwx, group=—, other=x
+    become: yes
+
   - name: Stop Nginx (may not be present yet, so ignore error)
     become: yes
     ansible.builtin.systemd:
